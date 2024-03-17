@@ -1,0 +1,46 @@
+`timescale 1ns / 1ps
+
+module mul4_4(p, a,b);
+    output [7:0] p;
+    input [3:0] a,b;
+// input assignment
+	wire [15:1]w;
+	wire [6:1]s;
+	wire [11:1]cin;
+		
+	and(p[0],a[0],b[0]);
+	and(w[1],a[1],b[0]);
+	and(w[2],a[2],b[0]);
+	and(w[3],a[3],b[0]);
+	and(w[4],a[0],b[1]);
+	and(w[5],a[1],b[1]);
+	and(w[6],a[2],b[1]);
+	and(w[7],a[3],b[1]);
+	and(w[8],a[0],b[2]);
+	and(w[9],a[1],b[2]);
+	and(w[10],a[2],b[2]);
+	and(w[11],a[3],b[2]);
+	and(w[12],a[0],b[3]);
+	and(w[13],a[1],b[3]);
+	and(w[14],a[2],b[3]);
+	and(w[15],a[3],b[3]);
+
+// Stage 1
+	  HA g1(p[1],cin[1],w[1],w[4]);
+	  FA g2(s[1],cin[2],w[2],w[5],cin[1]);
+	  FA g3(s[2],cin[3],w[3],w[6],cin[2]);
+	  HA g4(s[3],cin[4],w[7],cin[3]);
+
+// stage 2
+		HA g5(p[2],cin[5],s[1],w[8]);
+		FA g6(s[4],cin[6],w[9],s[2],cin[5]);
+		FA g7(s[5],cin[7],w[10],s[3],cin[6]);
+		FA g8(s[6],cin[8],w[11],cin[4],cin[7]);
+
+//stage 3
+		HA g9(p[3],cin[9],w[12], s[4]);
+		FA g10(p[4],cin[10],w[13],s[5],cin[9]);
+		FA g11(p[5],cin[11],w[14],s[6],cin[10]);
+		FA g12(p[6],p[7],w[15],cin[8],cin[11]);
+
+endmodule
